@@ -16,6 +16,7 @@
 # along with I4P.  If not, see <http://www.gnu.org/licenses/>.
 #
 # -*- coding: utf-8 -*-
+import ast
 from datetime import datetime
 from functools import update_wrapper
 import random
@@ -45,6 +46,7 @@ from django.core.cache import cache
 from .models import VersionActivity, Location
 from django.db.models.fields import FieldDoesNotExist
 from .forms import ProjectSearchForm, I4pLocationForm
+from django.utils.translation import get_language
 
 def homepage(request):
     """
@@ -232,6 +234,17 @@ class SearchView(FacetedSearchView):
         context.update(self.extra_context())
         return render_to_response(self.template, context, context_instance=self.context_class(self.request))
 
+    def get_translated(self, result):
+        dicted_result = []
+        for result_detail in result:
+            dicted_result.append(tuple(ast.literal_eval(result_detail)))
+        dicted_result = dict(dicted_result)
+        if get_language() in dicted_result:
+            return dicted_result[get_language()]
+        elif "en" in dicted_result:
+            return dicted_result["en"]
+        else:
+            return result[0][1]
         
     def get_context_data(self, **kwargs):
         context = super(SearchView, self).get_context_data(**kwargs)
@@ -239,9 +252,14 @@ class SearchView(FacetedSearchView):
         project_sheet_tags = Tag.objects.usage_for_model(I4pProject.objects.translations_model, counts=True)
         project_sheet_tags.sort(key=lambda tag:-tag.count)
         context['project_sheet_tags']=project_sheet_tags
+        objects = ['title']
         for result in self.page.object_list:
             if(result):
-                context['project_list'].append(result.object)
+                project = {}
+                for attribute in objects:
+                    project[attribute] = self.get_translated(getattr(result, attribute))
+                project['object'] = result.object
+                context['project_list'].append(project)
         return context
     
 class LocationEditView(TemplateView, ):

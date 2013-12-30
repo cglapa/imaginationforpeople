@@ -10,7 +10,7 @@ from .models import I4pProject, I4pProjectTranslation, Topic, Answer
 class I4pProjectIndex(indexes.SearchIndex, indexes.Indexable):
     #text = indexes.MultiValueField(document=True, use_template=False)
     text = indexes.CharField(document=True, use_template=False)
-    #title = indexes.CharField(model_attr='title')
+    title = indexes.MultiValueField(indexed=False)
     #baseline = indexes.CharField(model_attr='baseline')
     #For some reason MultiValueField doesn't work properly with whoosh
     #language_codes = indexes.CharField(indexed=True, stored=True)
@@ -61,6 +61,14 @@ class I4pProjectIndex(indexes.SearchIndex, indexes.Indexable):
                         questions_content.extend([answer.content for answer in answers])
             retval.extend(questions_content)
         return '\n'.join(retval)
+    def prepare_title(self, obj):
+        languages = obj.get_available_languages()
+        titles = []
+        for language in languages:
+            translated_project = self.get_model().objects.language(language).get(pk=obj.pk)
+            title = (language, translated_project.title)
+            titles.append(title)
+        return titles
     def prepare_has_team(self, obj):
         """
         If there is at least one user associated with this project
