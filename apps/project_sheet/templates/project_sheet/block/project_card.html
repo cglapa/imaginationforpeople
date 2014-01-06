@@ -24,7 +24,7 @@ Parameters for this block
 {% cache 3600 "project.object" project.object.id LANGUAGE_CODE site %}
 
 <div class="project-card">
-    {% if project.object.best_of %}
+    {% if project.best_of %}
       <div class="cocarde">&nbsp;</div>
     {% endif %}
     <div class="top">
