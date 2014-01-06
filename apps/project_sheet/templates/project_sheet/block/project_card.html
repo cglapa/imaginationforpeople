@@ -28,8 +28,8 @@ Parameters for this block
       <div class="cocarde">&nbsp;</div>
     {% endif %}
     <div class="top">
-        {% if project.object.get_primary_picture.thumbnail_idcard.url %}
-        <a href="{{ project.object.get_absolute_url }}"><img height="120" width="200" src="{{ project.object.get_primary_picture.thumbnail_idcard.url }}" alt="" /></a>
+        {% if project.picture %}
+        <a href="{{ project.object.get_absolute_url }}"><img height="120" width="200" src="{{ project.picture }}" alt="" /></a>
         {% else %}
          <a href="{{ project.object.get_absolute_url }}"><img height="120" width="200" src="{{ STATIC_URL }}images/project_sheet/project_card/img_projcard.jpg" alt="" /></a>
          {% endif %}

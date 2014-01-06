@@ -11,6 +11,7 @@ class I4pProjectIndex(indexes.SearchIndex, indexes.Indexable):
     #text = indexes.MultiValueField(document=True, use_template=False)
     text = indexes.CharField(document=True, use_template=False)
     title = indexes.MultiValueField(indexed=False)
+    picture = indexes.CharField(indexed=False)
     #baseline = indexes.CharField(model_attr='baseline')
     #For some reason MultiValueField doesn't work properly with whoosh
     #language_codes = indexes.CharField(indexed=True, stored=True)
@@ -69,6 +70,8 @@ class I4pProjectIndex(indexes.SearchIndex, indexes.Indexable):
             title = (language, translated_project.title)
             titles.append(title)
         return titles
+    def prepare_picture(self, obj):
+        return obj.get_primary_picture() and obj.get_primary_picture().thumbnail_idcard.url or None
     def prepare_has_team(self, obj):
         """
         If there is at least one user associated with this project
