@@ -253,7 +253,7 @@ class SearchView(FacetedSearchView):
         project_sheet_tags.sort(key=lambda tag:-tag.count)
         context['project_sheet_tags']=project_sheet_tags
         direct_objects = ['best_of', 'object']
-        translated_objects = ['title']
+        translated_objects = ['title', 'baseline']
         for result in self.page.object_list:
             if(result):
                 project = {}

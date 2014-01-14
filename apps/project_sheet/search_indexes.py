@@ -12,7 +12,7 @@ class I4pProjectIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=False)
     title = indexes.MultiValueField(indexed=False)
     picture = indexes.CharField(indexed=False)
-    #baseline = indexes.CharField(model_attr='baseline')
+    baseline = indexes.MultiValueField(indexed=False)
     #For some reason MultiValueField doesn't work properly with whoosh
     #language_codes = indexes.CharField(indexed=True, stored=True)
     language_codes = indexes.MultiValueField(indexed=True, stored=True)
@@ -62,14 +62,18 @@ class I4pProjectIndex(indexes.SearchIndex, indexes.Indexable):
                         questions_content.extend([answer.content for answer in answers])
             retval.extend(questions_content)
         return '\n'.join(retval)
-    def prepare_title(self, obj):
+    def prepare_translated(self, obj, attribute):
         languages = obj.get_available_languages()
-        titles = []
+        translated = []
         for language in languages:
             translated_project = self.get_model().objects.language(language).get(pk=obj.pk)
-            title = (language, translated_project.title)
-            titles.append(title)
-        return titles
+            value = (language, getattr(translated_project, attribute))
+            translated.append(value)
+        return translated
+    def prepare_title(self, obj):
+        return self.prepare_translated(obj, "title")
+    def prepare_baseline(self, obj):
+        return self.prepare_translated(obj, "baseline")
     def prepare_picture(self, obj):
         return obj.get_primary_picture() and obj.get_primary_picture().thumbnail_idcard.url or None
     def prepare_has_team(self, obj):

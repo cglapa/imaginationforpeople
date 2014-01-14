@@ -36,7 +36,7 @@ Parameters for this block
         <h2 title="{{ project.title }}">{{ project.title|truncatechars:40 }}</h2>
         <div class="progressbar"><span>{{ project.object.get_status_display }}</span></div>
         <p>
-            {{ project.object.baseline|truncatechars:110 }}
+            {{ project.baseline|truncatechars:110 }}
         </p>
     </div>
     <div class="bottom">
