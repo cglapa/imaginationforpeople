@@ -13,6 +13,7 @@ class I4pProjectIndex(indexes.SearchIndex, indexes.Indexable):
     title = indexes.MultiValueField(indexed=False)
     picture = indexes.CharField(indexed=False)
     baseline = indexes.MultiValueField(indexed=False)
+    about_section = indexes.MultiValueField(indexed=False)
     #For some reason MultiValueField doesn't work properly with whoosh
     #language_codes = indexes.CharField(indexed=True, stored=True)
     language_codes = indexes.MultiValueField(indexed=True, stored=True)
@@ -74,6 +75,8 @@ class I4pProjectIndex(indexes.SearchIndex, indexes.Indexable):
         return self.prepare_translated(obj, "title")
     def prepare_baseline(self, obj):
         return self.prepare_translated(obj, "baseline")
+    def prepare_about_section(self, obj):
+        return self.prepare_translated(obj, "about_section")
     def prepare_picture(self, obj):
         return obj.get_primary_picture() and obj.get_primary_picture().thumbnail_idcard.url or None
     def prepare_has_team(self, obj):
