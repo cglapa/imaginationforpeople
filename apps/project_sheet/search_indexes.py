@@ -24,6 +24,7 @@ class I4pProjectIndex(indexes.SearchIndex, indexes.Indexable):
     sites = indexes.MultiValueField()
     tags = indexes.MultiValueField(indexed=True, stored=True)
     countries = indexes.MultiValueField(indexed=True, stored=True)
+    first_country = indexes.MultiValueField(indexed=False)
     has_team = indexes.BooleanField()
     has_needs = indexes.BooleanField()
     created = indexes.DateTimeField(model_attr='created')
@@ -112,5 +113,16 @@ class I4pProjectIndex(indexes.SearchIndex, indexes.Indexable):
     def prepare_countries(self, obj):
         if obj.locations:
             return [location.country.code for location in obj.locations.all()]
+        else:
+            return None
+        
+    def prepare_first_country(self, obj):
+        if obj.locations and obj.locations.all():
+            country = obj.locations.all()[0].country
+            first_country = []
+            first_country.append(("code", country.code))
+            first_country.append(("name", unicode(country.name)))
+            first_country.append(("flag", country.flag))
+            return first_country
         else:
             return None

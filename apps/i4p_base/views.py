@@ -234,11 +234,14 @@ class SearchView(FacetedSearchView):
         context.update(self.extra_context())
         return render_to_response(self.template, context, context_instance=self.context_class(self.request))
 
-    def get_translated(self, result):
+    def dictionarize(self, result):
         dicted_result = []
         for result_detail in result:
             dicted_result.append(tuple(ast.literal_eval(result_detail)))
-        dicted_result = dict(dicted_result)
+        return dict(dicted_result)
+    
+    def get_translated(self, result):
+        dicted_result = self.dictionarize(result)
         if get_language() in dicted_result:
             return dicted_result[get_language()]
         elif "en" in dicted_result:
@@ -257,6 +260,7 @@ class SearchView(FacetedSearchView):
         for result in self.page.object_list:
             if(result):
                 project = {}
+                project["first_country"] = result.first_country and self.dictionarize(result.first_country) or None
                 for attribute in translated_objects:
                     project[attribute] = self.get_translated(getattr(result, attribute))
                 for attribute in direct_objects:

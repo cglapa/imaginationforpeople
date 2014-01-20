@@ -46,7 +46,11 @@ Parameters for this block
          {% if project.object.fans.count %}
           <span class="supported faned tipsed on" title="project with fans">Project with fans ({{project.object.fans.count}})</span>
         {% endif %}
-        <span class="country"><img src="{{ project.object.locations.all.0.country.flag }}" alt="{{ project.object.locations.all.0.country.code }}" /> {{ project.object.locations.all.0.country.name }}</span>
+        {% if project.first_country %}
+        <span class="country"><img src="{{ project.first_country.flag }}" alt="{{ project.first_country.code }}" /> {{ project.first_country.name }}</span>
+        {% else %}
+        <span class="country">&nbsp;</span>
+        {% endif %}
         <p>
 	    {% with project.object.get_current_translation.project.objectsupport_set.count as need_count %}
             <span class="needs tipsed on" class="tipsed on" title="<strong>{{ need_count }}</strong> needs">{{ need_count }}</span>
