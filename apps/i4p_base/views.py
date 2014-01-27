@@ -255,7 +255,7 @@ class SearchView(FacetedSearchView):
         project_sheet_tags = Tag.objects.usage_for_model(I4pProject.objects.translations_model, counts=True)
         project_sheet_tags.sort(key=lambda tag:-tag.count)
         context['project_sheet_tags']=project_sheet_tags
-        direct_objects = ['best_of', 'object']
+        direct_objects = ['id', 'best_of', 'object']
         translated_objects = ['title', 'baseline', 'about_section']
         for result in self.page.object_list:
             if(result):

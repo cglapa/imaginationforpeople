@@ -21,7 +21,7 @@ Parameters for this block
     </header>
 
     {% for project in project_list %}
-	{% include "project_sheet/block/project_card.html" %}
+	{% include "project_sheet/block/search_project_card.html" %}
     {% empty %}
 	{% trans "No projects found" %}
     {% endfor %}

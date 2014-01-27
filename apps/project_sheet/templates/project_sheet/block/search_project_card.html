@@ -28,27 +28,31 @@ Parameters for this block
       <div class="cocarde">&nbsp;</div>
     {% endif %}
     <div class="top">
-        {% if project.get_primary_picture.thumbnail_idcard.url %}
-        <a href="{{ project.get_absolute_url }}"><img height="120" width="200" src="{{ project.get_primary_picture.thumbnail_idcard.url }}" alt="" /></a>
+        {% if project.picture %}
+        <a href="{{ project.object.get_absolute_url }}"><img height="120" width="200" src="{{ project.picture }}" alt="" /></a>
         {% else %}
-         <a href="{{ project.get_absolute_url }}"><img height="120" width="200" src="{{ STATIC_URL }}images/project_sheet/project_card/img_projcard.jpg" alt="" /></a>
+         <a href="{{ project.object.get_absolute_url }}"><img height="120" width="200" src="{{ STATIC_URL }}images/project_sheet/project_card/img_projcard.jpg" alt="" /></a>
          {% endif %}
         <h2 title="{{ project.title }}">{{ project.title|truncatechars:40 }}</h2>
-        <div class="progressbar"><span>{{ project.get_status_display }}</span></div>
+        <div class="progressbar"><span>{{ project.object.get_status_display }}</span></div>
         <p>
             {{ project.baseline|truncatechars:110 }}
         </p>
     </div>
     <div class="bottom">
-        {% if project.members.count %}
-          <span class="supported tipsed on" title="project with members">Project with members ({{project.members.count}})</span>
+        {% if project.object.members.count %}
+          <span class="supported tipsed on" title="project with members">Project with members ({{project.object.members.count}})</span>
         {% endif %}
-         {% if project.fans.count %}
-          <span class="supported faned tipsed on" title="project with fans">Project with fans ({{project.fans.count}})</span>
+         {% if project.object.fans.count %}
+          <span class="supported faned tipsed on" title="project with fans">Project with fans ({{project.object.fans.count}})</span>
         {% endif %}
-        <span class="country"><img src="{{ project.locations.all.0.country.flag }}" alt="{{ project.locations.all.0.country.code }}" /> {{ project.locations.all.0.country.name }}</span>
+        {% if project.first_country %}
+        <span class="country"><img src="{{ project.first_country.flag }}" alt="{{ project.first_country.code }}" /> {{ project.first_country.name }}</span>
+        {% else %}
+        <span class="country">&nbsp;</span>
+        {% endif %}
         <p>
-	    {% with project.get_current_translation.projectsupport_set.count as need_count %}
+	    {% with project.object.get_current_translation.project.objectsupport_set.count as need_count %}
             <span class="needs tipsed on" class="tipsed on" title="<strong>{{ need_count }}</strong> needs">{{ need_count }}</span>
 	    {% endwith %}
             {% comment %}<span class="fav" title="10 favorites">10</span>{% endcomment %}
@@ -59,7 +63,7 @@ Parameters for this block
         <p>
             {{ project.about_section|truncatechars:300 }}
         </p>
-        <div class="more"><a href="{{ project.get_absolute_url }}">{% trans 'See the project' %}</a></div>
+        <div class="more"><a href="{{ project.object.get_absolute_url }}">{% trans 'See the project' %}</a></div>
     </div>
 </div>
 {% endcache %}
